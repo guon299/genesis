@@ -31,7 +31,7 @@
             let dragEnd = null;
             let mDown = false;
             let winW = $(window).innerWidth();
-            let sizeX = winW / 2;
+            let sizeX = winW / 3;
 
             // 반응형 이미지 슬라이드 함수
             const imgRate = 1.345244351;
@@ -42,7 +42,7 @@
             // 즉각 반응형 함수
             $(window).resize(function(){
                 winW = $(window).innerWidth();
-                sizeX = winW / 2;
+                sizeX = winW / 3;
                 slideImg.css({width: imgRate * winW, transform: `translateX(${-(imgRate * winW)*transRate }px)`});
             })
 
