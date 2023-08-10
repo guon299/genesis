@@ -47,6 +47,8 @@
             })
 
             // 터치 스와이프
+            // 데스크탑 : 마우스 터치 스와이프 이벤트
+            // 드래그 앤 드롭
             slideContainer.on({
                 mousedown(e){
                     winW = $(window).innerWidth();
@@ -110,8 +112,65 @@
                     mDown = false;
                     slideView.css({cursor : 'grab'})
                 }
-            })
+            });
 
+            // 테블릿 & 모바일 : 손가락(핑거링) 터치 스와이프 이벤트
+            // 드래그 앤 드롭
+            slideContainer.on({
+                touchstart(e){
+                    winW = $(window).innerWidth();
+                    sizeX = winW / 2;
+                    mouseDown = e.originalEvent.changedTouches[0].clientX;
+                    dragStart = e.originalEvent.changedTouches[0].clientX - (slideWrap.offset().left + winW);
+                    mDown = true;
+                    slideView.css({cursor : 'grabbing'});
+                    console.log(slideWrap.offset().left + winW);
+                },
+                touchend(e){
+                    mouseUp = e.originalEvent.changedTouches[0].clientX;
+                    if(mouseDown-mouseUp > sizeX){
+                        clearInterval(setId);
+                        if(!slideWrap.is(':animated')){
+                            nextCount();
+                        }
+
+                    }
+                    if(mouseDown-mouseUp < -sizeX){
+                        clearInterval(setId);
+                        if(!slideWrap.is(':animated')){
+                            prevCount();
+                        }
+
+                    }
+                    if((mouseDown-mouseUp) >= -sizeX && (mouseDown-mouseUp) <= sizeX){
+                        mainSlide();
+                    }
+                    mDown = false;
+                    slideView.css({cursor : 'grab'})
+                },
+                touchmove(e){
+                    if(!mDown) return;
+                    dragEnd = e.originalEvent.changedTouches[0].clientX;
+                    slideWrap.css({left : dragEnd - dragStart});
+                }
+            });
+
+            // 손가락 터치 이벤트
+            // 테블릿과 모바일에서만 동작함
+            // originalEvent: TouchEvent, type: 'touchstart'
+            // 테블릿 모바일 환경에서는 오리지날 터치 이벤트에서 체인지터치의 배열번호를 확인 하고 클라인턴트 X 값을 확인 할 수 있다
+        /*  slideContainer.on({
+                touchstart(e){
+                    console.log(e.clientX);
+                    console.log(e.originalEvent.changedTouches[0].clientX);
+                },
+                touchend(e){
+                    console.log(e.originalEvent.changedTouches[0].clientX);
+                },
+                touchmove(e){
+                    console.log(e.originalEvent.changedTouches[0].clientX);
+                }
+            }) */
 
             // 1. 메인슬라이드함수
             function mainSlide(){
@@ -237,6 +296,7 @@
             })
 
             // 7. 터치 스와이프
+            // 데스트탑
             slideContainer.on({
                 mousedown(e){
                     touchStart = e.clientX;
@@ -284,6 +344,38 @@
                     slideView.css({cursor : 'grab'});
                 }
             })
+            //터치스와이프 
+            // 테블릿 모바일
+            slideContainer.on({
+                touchstart(e){
+                    touchStart = e.originalEvent.changedTouches[0].clientX;
+                    dragStart = e.originalEvent.changedTouches[0].clientX - (slideWrap.offset().left-offsetL);
+                    mDown = true;
+                    slideView.css({cursor : 'grabbing'});
+                },
+                touchend(e){
+                    touchEnd = e.originalEvent.changedTouches[0].clientX;
+                    if(touchStart-touchEnd > sizeX){
+                        nextCount ();
+                    }
+                    if(touchStart-touchEnd < -sizeX){
+                        prevCount ();
+                    }
+                    if((touchStart-touchEnd) >= -sizeX && (touchStart-touchEnd) <= sizeX){
+                        mainSlide();
+                    }
+                    mDown = false;
+                    slideView.css({cursor : 'grab'});
+                },
+                touchmove(e){
+                    if(!mDown) return;
+
+                    dragEnd = e.originalEvent.changedTouches[0].clientX;
+
+                        slideWrap.css({left : dragEnd - dragStart});
+
+                }
+            });
 
             mainSlide();
             // 1. 메인 슬라이드 함수
