@@ -22,7 +22,7 @@
             const pageBtn = $('#section1 .page-btn');
             const stopBtn = $('#section1 .stop-btn');
             const playBtn = $('#section1 .play-btn');
-            const n = ($('#section1 .slide').length-2)-1;
+            let n = ($('#section1 .slide').length-2)-1;
             const slideView = $('#section1 .slide-view');
             const slideImg = $('#section1 .slide img');
             let mouseDown = null;
@@ -52,7 +52,7 @@
             slideContainer.on({
                 mousedown(e){
                     winW = $(window).innerWidth();
-                    sizeX = winW / 2;
+                    sizeX = winW / 3;
                     mouseDown = e.clientX;
                     dragStart = e.clientX - (slideWrap.offset().left + winW);
                     mDown = true;
@@ -119,7 +119,7 @@
             slideContainer.on({
                 touchstart(e){
                     winW = $(window).innerWidth();
-                    sizeX = winW / 2;
+                    sizeX = winW / 3;
                     mouseDown = e.originalEvent.changedTouches[0].clientX;
                     dragStart = e.originalEvent.changedTouches[0].clientX - (slideWrap.offset().left + winW);
                     mDown = true;
@@ -253,6 +253,7 @@
             const topH3 = $('#section2 .slide-wrap .slide h3');
             const topH4 = $('#section2 .slide-wrap .slide h4');
             const heightRate = 0.884545453;
+            let n = slide.length;
 
             let touchStart = null;
             let touchEnd = null;
@@ -273,19 +274,34 @@
                     slideW = (container.innerWidth()-0+20+20)/3;
                     if(winW>1280){// 1280 초과에서는 슬라이드 3개
                         slideW = (container.innerWidth()-0+20+20)/3;
+                        // 페이지 버튼 갯수 제어 : 8개인 경우 / 8개인 경우
+                        n = slide.length-2;
+                        pageBtn.css({display:'none'});
+                        for(let i = 0; i < n; i++ ){
+                            pageBtn.eq(i).css({display:'block'});
+                        }
+                        if(cnt>=7){cnt = 7}
                     }
                     else{ // 1280 이하에서는 슬라이드 1개만 노출이 된다
                         slideW = (container.innerWidth()-0+20+20)/1;
+                        n = slide.length;
+                        pageBtn.css({display:'block'})
                     }
                 }
                 else{// 이하 winW < 1642
                     slideW = (container.innerWidth()-193+20+20)/3;
+                    n = slide.length-2;
+                    pageBtn.css({display:'none'});
+                    for(let i = 0; i < n; i++ ){
+                        pageBtn.eq(i).css({display:'block'});
+                    }
                 }
                 
                 slideWrap.css({width: slideW*10});
                 slide.css({width: slideW, height: slideW * heightRate});
                 topH3.css({fontSize: slideW*0.08});
                 topH4.css({fontSize: slideW*0.03});
+
                 mainSlide(); // 슬라이드 너비 전달하기 위해서 호출
             }
             // 가로세로 크기가 1픽셀만 이라도 변경되면 동작 구동이 된다
@@ -405,7 +421,7 @@
             // 4. 다음 카운트 함수
             function nextCount (){
                 cnt++;
-                if(cnt>7){cnt=7}
+                if(cnt>n-1){cnt=n-1}
                 mainSlide();
             }
 
